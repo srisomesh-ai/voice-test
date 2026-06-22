@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Open Map -->
+    <shortcut
+        android:shortcutId="open_map"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_map">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="bharatgps://open?command=map"
+            android:targetPackage="com.bharatgps.voice_test"
+            android:targetClass="com.bharatgps.voice_test.MainActivity" />
+        <capability android:name="actions.intent.OPEN_APP_FEATURE">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.bharatgps.voice_test"
+                android:targetClass="com.bharatgps.voice_test.MainActivity">
+                <parameter
+                    android:name="feature"
+                    android:key="command" />
+            </intent>
+        </capability>
+    </shortcut>
+
+    <!-- Show Alerts -->
+    <shortcut
+        android:shortcutId="open_alerts"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_alerts">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="bharatgps://open?command=alerts"
+            android:targetPackage="com.bharatgps.voice_test"
+            android:targetClass="com.bharatgps.voice_test.MainActivity" />
+    </shortcut>
+
+    <!-- Open Dashboard -->
+    <shortcut
+        android:shortcutId="open_dashboard"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_dashboard">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="bharatgps://open?command=dashboard"
+            android:targetPackage="com.bharatgps.voice_test"
+            android:targetClass="com.bharatgps.voice_test.MainActivity" />
+    </shortcut>
+
+</shortcuts>
