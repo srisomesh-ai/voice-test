@@ -1,11 +1,15 @@
 package com.bharatgps.voice_test
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import androidx.annotation.NonNull
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -13,6 +17,7 @@ import java.util.Locale
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "bharatgps/voice"
+    private val MIC_PERM_CODE = 7001
     private var channel: MethodChannel? = null
     private var recognizer: SpeechRecognizer? = null
 
@@ -21,10 +26,31 @@ class MainActivity : FlutterActivity() {
         channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
         channel?.setMethodCallHandler { call, result ->
             if (call.method == "listen") {
-                startListening()
+                ensurePermissionThenListen()
                 result.success(null)
             } else {
                 result.notImplemented()
+            }
+        }
+    }
+
+    private fun ensurePermissionThenListen() {
+        val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            startListening()
+        } else {
+            // ask the user for mic permission; we listen after they allow
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), MIC_PERM_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == MIC_PERM_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startListening()
+            } else {
+                channel?.invokeMethod("onError", "Microphone permission denied")
             }
         }
     }
